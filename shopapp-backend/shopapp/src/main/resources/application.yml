@@ -22,4 +22,4 @@ api:
   prefix: api/v1
 jwt:
   expiration: 2592000 #30days
-  secretKey: I would be better
+  secretKey: gU4IT8IQwaIQoSYVm8qHbO1jheULsXDKx2XPe67o2n8=
