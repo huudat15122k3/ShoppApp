@@ -10,6 +10,7 @@ import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -52,18 +53,18 @@ public class JwtTokenUtil {
         return Keys.hmacShaKeyFor(bytes);
     }
 
-    private String generateSecretKey() {
-        SecureRandom random = new SecureRandom();
-        byte[] keyBytes = new byte[32];
-        random.nextBytes(keyBytes);
-        return Encoders.BASE64.encode(keyBytes);
-    }
+//    private String generateSecretKey() {
+//        SecureRandom random = new SecureRandom();
+//        byte[] keyBytes = new byte[32];
+//        random.nextBytes(keyBytes);
+//        return Encoders.BASE64.encode(keyBytes);
+//    }
 
     private Claims extractAllClaims(String token){
         return Jwts.parser()
                 .setSigningKey(getSignInKey())
                 .build()
-                .parseClaimsJwt(token)
+                .parseClaimsJws(token)
                 .getBody();
     }
 
@@ -80,5 +81,10 @@ public class JwtTokenUtil {
 
     public String extractPhoneNumber(String token) {
         return extractClaim(token,Claims::getSubject);
+    }
+
+    public boolean validateToken(String token, UserDetails userDetails) {
+        String phoneNumber = extractPhoneNumber(token);
+        return (phoneNumber.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 }
