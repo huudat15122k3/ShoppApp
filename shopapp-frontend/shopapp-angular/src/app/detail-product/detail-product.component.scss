@@ -1,0 +1,93 @@
+.container {
+    color: white;
+    margin-top: 20px;
+}
+
+.intro-section {
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.product-image {
+    width: 100%;
+    height: 70%;
+    object-fit: cover;
+}
+
+.thumnail-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.thumnail-item {
+    width: 120px;
+    height: 120px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.thumnail-item:last-child {
+    margin-right: 0;
+}
+
+.thumnail-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.thumnail-item.active {
+    border: 2px solid #f8f9fa;
+}
+
+.product-details {
+    color: white;
+    padding: 20px;
+}
+
+.product-actions {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 20px;
+}
+
+.product-actions button {
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.product-quantity {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 10px;
+    align-items: center;
+}
+
+.border-wrapper {
+    border: 1px solid #f8f9fa;
+}
+
+.product-quantity button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 16px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.product-quantity input {
+    width: 50px;
+    height: 30px;
+    text-align: center;
+    border: none;
+    background-color: transparent;
+    color: white;
+}
+
+.product-quantity input:focus {
+    outline: none;
+}
