@@ -1,9 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
 import { FooterComponent } from '../footer/footer.component';
 import { FormsModule } from '@angular/forms';
-import { CommonModule, NgFor } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { NgForm } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { RegisterDTO } from '../dtos/user/register.dto';
+import { UserService } from '../service/user.service';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-register',
@@ -14,7 +17,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class RegisterComponent {
   @ViewChild('registerForm') registerForm!: NgForm;
   //Khai báo biến tương ứng với các trường dữ liệu của form đăng ký
-  phone: string;
+  phoneNumber: string;
   password: string;
   retypePassword: string;
   address: string;
@@ -22,26 +25,52 @@ export class RegisterComponent {
   isAccepted: boolean;
   dateOfBirth: Date;
   //Hàm khởi tạo của component
-  constructor() {
-    this.phone = '';
+  constructor(private router: Router, private UserService: UserService) {
+    this.phoneNumber = '';
     this.password = '';
     this.retypePassword = '';
-    this.phone = '';
     this.address = '';
     this.fullName = '';
-    this.isAccepted = false;
+    this.isAccepted = true;
     this.dateOfBirth = new Date();
     this.dateOfBirth.setFullYear(1990);
+    //inject
+
   }
 
   register() {
-    const message = `Phone: ${this.phone}, 
+    const message = `Phone: ${this.phoneNumber}, 
     Password: ${this.password},
      Address: ${this.address},
       Full name: ${this.fullName},
        Is accepted: ${this.isAccepted},
         Date of birth: ${this.dateOfBirth}`;
-    alert(message);
+    debugger
+
+    
+
+    const registerDTO:RegisterDTO = {
+      "fullname": this.fullName,
+      "phone_number": this.phoneNumber,
+      "address": this.address,
+      "password": this.password,
+      "retype_password": this.retypePassword,
+      "date_of_birth": this.dateOfBirth,
+      "facebook_account_id": 0,
+      "google_account_id": 0,
+      "role_id": 1
+    }
+
+    this.UserService.register(registerDTO).subscribe({
+      next: (response: any) => {
+        debugger
+        this.router.navigate(['/login']);
+
+      },
+      complete: () => { debugger },
+      error: (error: any) => {
+        alert(`Register failed! Error:  + ${error.error}`);
+      }});
   }
 
   checkPasswordsMatch() {
