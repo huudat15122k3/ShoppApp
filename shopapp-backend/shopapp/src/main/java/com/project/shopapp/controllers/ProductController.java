@@ -3,6 +3,7 @@ package com.project.shopapp.controllers;
 
 
 import com.github.javafaker.Faker;
+import com.project.shopapp.components.LocalizationUtils;
 import com.project.shopapp.dtos.ProductDTO;
 import com.project.shopapp.dtos.ProductImageDTO;
 import com.project.shopapp.models.Product;
@@ -10,6 +11,7 @@ import com.project.shopapp.models.ProductImage;
 import com.project.shopapp.reponses.ProductListResponse;
 import com.project.shopapp.reponses.ProductResponse;
 import com.project.shopapp.services.IProductService;
+import com.project.shopapp.utils.MessageKeys;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,6 +39,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProductController {
     private  final IProductService productService;
+    private final LocalizationUtils localizationUtils;
+
     @GetMapping("")// http://localhost:8088/api/v1/products
     public ResponseEntity<ProductListResponse> getProducts(
             @RequestParam("page") int page,
@@ -96,18 +100,27 @@ public class ProductController {
             Product existingProduct = productService.getProductById(productId);
             files = files == null ? new ArrayList<MultipartFile>() : files;
             if(files.size() > ProductImage.MAXIMUM_IMAGES_PER_PRODUCT) {
-                return ResponseEntity.badRequest().body("You can only upload maximum 5 images");
+                return ResponseEntity.badRequest().body(
+                        localizationUtils
+                                .getLocalizedMessage(MessageKeys.UPLOAD_IMAGES_MAX_5)
+                );
             }
             List<ProductImage> productImages = new ArrayList<>();
             for(MultipartFile file : files){
                 if(file!=null){
                     if(file.getSize() == 0) continue;
                     if(file.getSize() > 10 * 1024 * 1024){ // Kích thước lớn hơn 10MB
-                        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body("File is too large! Maximum size is 10MB!");
+                        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(
+                                localizationUtils
+                                        .getLocalizedMessage(MessageKeys.UPLOAD_IMAGES_FILE_LARGE)
+                        );
                     }
                     String contentType = file.getContentType();
                     if(!contentType.startsWith("image/")){
-                        return  ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body("File must be an image!");
+                        return  ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(
+                                localizationUtils
+                                        .getLocalizedMessage(MessageKeys.UPLOAD_IMAGES_FILE_MUST_BE_IMAGE)
+                        );
                     }
                     //Lữu và cập nhập thumbnail trong DTO
                     String fileName = storeFile(file);
