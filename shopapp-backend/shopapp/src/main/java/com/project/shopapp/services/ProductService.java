@@ -15,7 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,20 +43,30 @@ public class ProductService implements IProductService{
     }
 
     @Override
-    public Product getProductById(long id) throws Exception {
-        return productRepository.findById(id).orElseThrow(()->
-                new DataNotFoundException("Cannot find product with id: " + id));
+    public Product getProductById(long productId) throws Exception {
+        Optional<Product> optionalProduct = productRepository.getDetailProduct(productId);
+        if(optionalProduct.isPresent()) {
+            return optionalProduct.get();
+        }
+        throw new DataNotFoundException("Cannot find product with id =" + productId);
+    }
+    @Override
+    public List<Product> findProductsByIds(List<Long> productIds) {
+        return productRepository.findProductsByIds(productIds);
     }
 
     @Override
-    public Page<ProductResponse> getAllProduct(PageRequest pageRequest) {
+    public Page<ProductResponse> getAllProducts(String keyword,Long categoryId
+                                                ,PageRequest pageRequest) {
         //Get product by page and limit
-        return productRepository.findAll(pageRequest).map(
-                ProductResponse::fromProduct
-        );
+
+        Page<Product> productsPage;
+        productsPage = productRepository.searchProducts(categoryId,keyword,pageRequest);
+        return productsPage.map(ProductResponse::fromProduct);
     }
 
     @Override
+    @Transactional
     public Product updateProduct(long id, ProductDTO productDTO) throws Exception {
         Product existingProduct = getProductById(id);
         if(existingProduct != null) {
@@ -74,31 +86,41 @@ public class ProductService implements IProductService{
     }
 
     @Override
+    @Transactional
     public void deleteProduct(long id) {
         Optional<Product> optionalProduct = productRepository.findById(id);
         optionalProduct.ifPresent(productRepository::delete);
     }
 
     @Override
-    public boolean exitsByName(String name) {
+    public boolean existsByName(String name) {
         return productRepository.existsByName(name);
     }
     @Override
-    public ProductImage createProductImage(long productId, ProductImageDTO productImageDTO) throws Exception {
-        Product existingProduct = productRepository.findById(productId)
+    @Transactional
+    public ProductImage createProductImage(
+            Long productId,
+            ProductImageDTO productImageDTO) throws Exception {
+        Product existingProduct = productRepository
+                .findById(productId)
                 .orElseThrow(() ->
-                        new DataNotFoundException("Cannot find product with id: "
-                                + productImageDTO.getProductId()));
+                        new DataNotFoundException(
+                                "Cannot find product with id: "+productImageDTO.getProductId()));
         ProductImage newProductImage = ProductImage.builder()
                 .product(existingProduct)
                 .imageUrl(productImageDTO.getImageUrl())
                 .build();
-        //Cannot insert over 5 images for 1 product
+        //Ko cho insert quá 5 ảnh cho 1 sản phẩm
         int size = productImageRepository.findByProductId(productId).size();
         if(size >= ProductImage.MAXIMUM_IMAGES_PER_PRODUCT) {
-            throw new InvalidParamException("Number of images must be <= "
-                    + ProductImage.MAXIMUM_IMAGES_PER_PRODUCT);
+            throw new InvalidParamException(
+                    "Number of images must be <= "
+                            +ProductImage.MAXIMUM_IMAGES_PER_PRODUCT);
         }
         return productImageRepository.save(newProductImage);
+    }
+
+    public List<Product> testFindByCategoryId(Long categoryId) {
+        return productRepository.findByCategoryId(categoryId);
     }
 }
