@@ -1,73 +1,86 @@
-.container{
-    color:white;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
 }
 
+.container {
+    color: white;
+}
 .intro-section {
-    margin-top: 50px;
-    margin-bottom: 50px;
+    color: white;
+    padding: 20px;
     text-align: center;
-    color: aliceblue;
 }
-
-.product-header{
-    color: rgb(233,66,176);
+.product-header {
+    color: rgb(233, 66, 176);
 }
+.form-control {
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 
-.form-control{
-    background-color: rgb(19,23,42);
-    border: 1px solid rgb(29,33,54);
+    background-color: rgb(19, 23, 42);
+    border: 1px solid rgb(29, 33, 54);
     color: white;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
 }
 
-.form-control:focus{
-    background-color: rgb(19,23,42);
+.form-control:focus {
     border-color: white;
+    background-color: rgb(19, 23, 42);
 }
-
-.form-label{
+.form-label {
     color: white;
 }
-
-.product-order{
-    color:rgb(105, 244, 181);
+.product-header {
+    color: rgb(233, 66, 176);
 }
-
-table{
+.product-order {
+    color: rgb(105, 244, 181);
+}
+table {
     width: 100%;
     border-radius: 10px;
-    border-collapse: collapse;
     border: none;
+    border-collapse: separate;
     border: 1px solid white;
     border-spacing: 0;
-    background-color: rgb(12,13,54);
-    color: white;
+    background-color: rgb(12, 13, 54);    
 }
 
-th,td {
+th,
+td {
     padding: 10px;
     text-align: center;
 }
-
-.product-info{
+.product-info {
     display: flex;
     align-items: center;
 }
 
-.product-image{
+.product-image {
     width: 100px;
     height: 100px;
     border-radius: 5px;
     margin-right: 10px;
 }
 
-.product-name{
+.product-name {
     color: white;
     margin-right: 10px;
 }
-
 .btn-gradient {
-    background: linear-gradient(to right, rgb(225,64,180), rgb(126,43,237));
+    background: linear-gradient(45deg, #ff758c, #ff7eb3);
+    transition: all 0.3s ease-in-out;
+
     color: white;
     border-radius: 30px;
     width: 200px;
+
+  }
+  .btn-gradient:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 5px 15px rgba(255, 120, 180, 0.4);
 }
